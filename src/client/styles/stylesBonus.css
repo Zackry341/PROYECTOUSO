@@ -1,0 +1,316 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("../assets/f1a3bcd7-a890-41e1-8d67-7e87e7ec3f6a.jpg");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    font-size: 30px;
+    opacity: 1 !important;
+}
+
+p {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    opacity: 1 !important;
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #dfdfdf !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 40px;
+    opacity: 1 !important;
+}
+
+
+.tarjetas-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 5vw;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    width: fit-content;
+    padding: 0;
+    margin-top: 25px;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* Estilos para la tarjeta */
+.tarjeta {
+    position: relative;
+    width: 300px;
+    max-width: 300px;
+    height: 500px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease, box-shadow 0.5s ease, left 0.5s ease;
+    left: 0px;
+    z-index: 1;
+    isolation: isolate;
+    animation: giro 1s 1;
+    transform: translateX(0); /* Transformación inicial explícita */
+    transition: transform 1s ease, box-shadow 0.8s ease, left 0.5s ease;
+    will-change: transform, box-shadow;
+}
+
+@keyframes giro {
+    from {
+        transform: rotateY(180deg);
+    }
+
+    to {
+        transform: rotateY(0deg);
+    }
+}
+
+.tarjeta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: 200% 200%;
+    border-radius: inherit;
+    z-index: -1;
+    transition: opacity 0.5s ease;
+    opacity: 0.9;
+}
+
+
+/* Añadir efecto de transición para el contenido interno */
+.tarjeta .contenido {
+    padding: 20px;
+    opacity: 0.8;
+    transition: opacity 0.5s ease;
+}
+
+.tarjeta:hover .contenido {
+    opacity: 1.5;
+}
+
+
+/* Efectos hover para tarjetas individuales */
+.hover-activo .tarjeta:hover {
+    transform: translateY(-20px) scale(1.1);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+/* Tarjetas a la derecha de la que tiene hover */
+.hover-activo .tarjeta:hover ~ .tarjeta {
+    left: 50px;
+    transform: translateX(10px);
+    transition: left 0.5s ease, transform 0.5s ease;
+}
+
+/* Tarjetas a la izquierda de la que tiene hover */
+.hover-activo .tarjeta:has(+ .tarjeta:hover),
+.hover-activo .tarjeta:has(+ .tarjeta + .tarjeta:hover) {
+    left: -50px;
+    transform: translateX(-10px);
+    transition: left 0.5s ease, transform 0.5s ease;
+}
+
+.tarjeta-pulsando {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 10px 10px var(--tarjeta-color, rgba(255, 255, 255, 0.589)) !important;
+    
+}
+
+/* Estilo tarjeta Easy */
+#tarjetaEasy {
+    background: transparent;
+    color: #0a501f;
+    box-shadow: 0px 0px 15px 5px rgba(8, 206, 41, 0.767);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    animation-delay: 0s;
+    --tarjeta-color: rgba(8, 206, 41, 0.8);
+}
+
+#tarjetaEasy::before {
+    background: linear-gradient(125deg, #01886b, #08ce29, #01886b, #08ce29);
+    box-shadow: 0 0 25px rgba(8, 206, 41, 0.5);
+}
+
+/* Estilo tarjeta Medium */
+#tarjetaMedium {
+    background: transparent;
+    color: #ffcc00;
+    box-shadow: 0px 0px 15px 5px rgba(238, 241, 4, 0.767);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+    animation-delay: 0.3s;
+    --tarjeta-color: rgba(255, 204, 0, 0.8);
+}
+
+#tarjetaMedium::before {
+    background: linear-gradient(125deg, #d0ff00da, #ffcc00d2, #e5ff00c2, #ffae00d3);
+    box-shadow: 0 0 25px rgba(255, 204, 0, 0.5);
+}
+
+
+
+/* Estilo tarjeta Hard */
+#tarjetaHard {
+    background: transparent;
+    color: #ff0000;
+    box-shadow: 0px 0px 15px 5px rgba(255, 0, 0, 0.767);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    animation-delay: 0.6s;
+    --tarjeta-color: rgba(255, 0, 0, 0.8);
+}
+
+#tarjetaHard::before {
+    background: linear-gradient(125deg, #ff7b00e0, #ff0000c0, #ff7b00c7, #ff0000c0);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+}
+
+
+.esquina-superior {
+    position: relative;
+    top: 0px;
+    left: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    background: linear-gradient(to right, #000000, #08ce29);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+.esquina-inferior {
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    transform: rotate(180deg);
+    background: linear-gradient(to right, #000000, #08ce29);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+.esquina-inferior2 {
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    transform: rotate(180deg);
+    background: linear-gradient(to right, #000000, #ffcc00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+.esquina-superior2 {
+    position: relative;
+    top: 0px;
+    left: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    background: linear-gradient(to right, #000000, #ffcc00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+.esquina-inferior3 {
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    transform: rotate(180deg);
+    background: linear-gradient(to right, #000000, #ff0000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+.esquina-superior3 {
+    position: relative;
+    top: 0px;
+    left: 20px;
+    font-size: 70px;
+    font-weight: bold;
+    background: linear-gradient(to right, #000000, #ff0000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0.8;
+}
+
+/*imagene de la tarjeta*/
+#imagen {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    max-width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0.7;
+}
+
+
+
+.contenido {
+    padding: 20px;
+}
+
+.contenido h2 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.contenido p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tarjeta {
+        width: 100%;
+        max-width: 400px;
+    }
+}

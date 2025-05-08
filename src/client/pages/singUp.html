@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse</title>
+    <link rel="stylesheet" href="/styles/stylesSingUp.css">
+    <link rel="stylesheet" href="/styles/stylesLogin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Meta tags para prevenir cacheo de información sensible -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body>
+    <div class="network-lines"></div>
+    <div class="container">
+        <form class="login-form singup-form" id="singupForm">
+            <h2>Crear Cuenta</h2>
+
+            <!-- Campo oculto para token CSRF -->
+            <input type="hidden" name="csrf_token" id="csrf_token">
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required maxlength="100"
+                        autocomplete="name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,100}">
+                </div>
+                <span class="error-message" id="nombre-error"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Correo electrónico" required
+                        maxlength="100" autocomplete="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                </div>
+                <span class="error-message" id="email-error"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Contraseña" required minlength="8"
+                        maxlength="64" autocomplete="new-password">
+                </div>
+                <div class="password-strength-container">
+                    <div class="password-strength-bar"></div>
+                </div>
+                <span class="error-message" id="password-error"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirm-password" name="confirm-password"
+                        placeholder="Confirmar contraseña" required minlength="8" maxlength="64"
+                        autocomplete="new-password">
+                </div>
+                <span class="error-message" id="confirm-password-error"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" required
+                        pattern="[0-9]{10}" maxlength="10" autocomplete="tel">
+                </div>
+                <span class="error-message" id="telefono-error"></span>
+            </div>
+
+            <!-- Campo honeypot (trampa para bots) -->
+            <div class="honeypot-field" style="display:none;">
+                <input type="text" name="website" id="website" autocomplete="off">
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terminos" name="terminos" required>
+                <label for="terminos">Acepto los <a href="/pages/condiciones.html" class="terminos-link">términos y
+                        condiciones</a></label>
+                <span class="error-message" id="terminos-error"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="btn-registrar">Registrarse</button>
+            </div>
+
+            <div class="form-footer">
+                <p>¿Ya tienes una cuenta? <a href="/">Iniciar Sesión</a></p>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" id="cerrar-modal">&times;</span>
+            <h3>Registro Exitoso</h3>
+            <p id="texto-modal">Tu cuenta ha sido creada correctamente.</p>
+            <button class="btn-modal" id="btn-continuar">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal de carga -->
+    <div class="modal" id="loading-modal">
+        <div class="modal-contenido loading-contenido">
+            <div class="spinner"></div>
+            <p>Procesando solicitud...</p>
+        </div>
+    </div>
+
+    <script src="/js/singup.js"></script>
+</body>
+
+</html>

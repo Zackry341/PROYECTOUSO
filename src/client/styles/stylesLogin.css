@@ -1,0 +1,794 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.no-select {
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer 10+ */
+    user-select: none;
+    /* Estándar */
+}
+
+.g-recaptcha {
+user-select: none;
+}
+
+/* Estilos de fondo */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("https://i.ibb.co/VYVyCfyh/3607424.jpg");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Efecto de brillo izquierdo (rojo) */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 50%,
+            rgba(255, 0, 0, 0.199) 0%,
+            transparent 75%);
+    pointer-events: none;
+    z-index: 1;
+    animation: pulseRed 8s infinite;
+    filter: brightness(1);
+}
+
+/* Efecto de brillo derecho (azul) */
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: radial-gradient(circle at 80% 50%,
+            rgba(0, 149, 255, 0.219) 0%,
+            transparent 75%);
+    pointer-events: none;
+    z-index: 1;
+    animation: pulseBlue 8s infinite;
+    filter: brightness(1);
+}
+
+/* Efecto de líneas de conexión brillantes */
+.network-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: conic-gradient(from 0deg at 20% 30%,
+            transparent 0%,
+            rgba(255, 0, 0, 0.267) 10%,
+            transparent 20%),
+        conic-gradient(from 180deg at 80% 70%,
+            transparent 0%,
+            rgba(0, 149, 255, 0.212) 10%,
+            transparent 20%);
+    background-size: 200% 200%;
+    pointer-events: none;
+    z-index: 1;
+    animation: rotateConic 20s linear infinite, fadeInOut 10s ease-in-out infinite;
+}
+
+.network-lines::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: conic-gradient(from 180deg at 20% 30%,
+            transparent 0%,
+            rgba(255, 0, 0, 0.2) 10%,
+            transparent 20%),
+        conic-gradient(from 0deg at 80% 70%,
+            transparent 0%,
+            rgba(0, 150, 255, 0.2) 10%,
+            transparent 20%);
+    background-size: 200% 200%;
+    opacity: 0;
+    animation: rotateConic 20s linear infinite,
+        fadeInOut 10s ease-in-out infinite 5s;
+}
+
+@keyframes rotateConic {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Animaciones */
+@keyframes pulseRed {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        filter: brightness(0.8);
+    }
+
+    25% {
+        opacity: 0.5;
+        filter: brightness(1.2);
+    }
+
+    50% {
+        opacity: 0.8;
+        filter: brightness(1.75);
+    }
+
+    75% {
+        opacity: 0.5;
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes pulseBlue {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        filter: brightness(0.8);
+    }
+
+    25% {
+        opacity: 0.8;
+        filter: brightness(1.75);
+    }
+
+    50% {
+        opacity: 0.5;
+        filter: brightness(1.2);
+    }
+
+    75% {
+        opacity: 0.3;
+        filter: brightness(0.8);
+    }
+}
+
+@keyframes moveGlow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+@keyframes rotateConic {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+/* Contenedor principal */
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    position: relative;
+    z-index: 3;
+}
+
+/* Formulario de inicio de sesión con borde de luz */
+.login-form {
+    background-color: white;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(240, 240, 255, 0.9));
+    padding: 30px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Borde de luz animado */
+.login-form::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background-color: rgb(224, 225, 226);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.5), 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+/* Animación del borde brillante */
+@keyframes borderGlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    background: linear-gradient(to right, #720404, #0f21c4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
+/* Grupos de formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Contenedor para input con icono al lado */
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-with-icon i {
+    font-size: 25px;
+    background: linear-gradient(to right, #720404, #310101);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    order: -1;
+}
+
+.input-with-icon input {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Contenedor para usuario y contraseña */
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Efecto de brillo sutil cuando está inactivo con animación de pulso */
+.form-group input:not(:focus) {
+    box-shadow: 0 0 5px rgba(160, 15, 15, 0.3);
+    animation: pulseBrillo 2s infinite ease-in-out;
+}
+
+/* Animación de pulso para el brillo */
+@keyframes pulseBrillo {
+    0% {
+        box-shadow: 0 0 5px rgba(160, 15, 15, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 8px rgba(160, 15, 15, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(160, 15, 15, 0.2);
+    }
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px transparent;
+    animation: borderGradient 3s ease infinite;
+}
+
+@keyframes borderGradient {
+    0% {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 3px #c508087e;
+    }
+
+    33% {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 3px #191cdb7c;
+    }
+
+    66% {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 3px #c508087e;
+    }
+
+    100% {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 3px #191cdb7c;
+    }
+}
+
+/* Contenedor para el recaptcha */
+.g-recaptcha {
+    transform: scale(1);
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.g-recaptcha>div {
+    width: 100% !important;
+    height: auto !important;
+    text-align: center;
+    position: relative;
+}
+
+.g-recaptcha iframe {
+    margin: 0 auto !important;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+}
+
+.g-recaptcha::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -4px;
+    bottom: 4px;
+    background: rgba(12, 25, 202, 0.2);
+    border-radius: 2px;
+    z-index: -1;
+    animation: pulseBrillo2 2s infinite ease-in-out;
+}
+
+@keyframes pulseBrillo2 {
+    0% {
+        box-shadow: 0 0 5px rgba(12, 25, 202, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 10px rgba(15, 17, 160, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(12, 25, 202, 0.2);
+    }
+}
+
+.shake-animation {
+    animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-3px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(3px, 0, 0);
+    }
+}
+
+/* Botón de inicio de sesión con efecto fosforescente */
+.form-group button {
+    width: 100%;
+    padding: 12px;
+    color: white;
+    border: 0 solid;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, #7c0303, #07489c);
+    background-size: 200% 200%;
+    position: relative;
+    overflow: hidden;
+
+    /* Efecto fosforescente base */
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    outline: none;
+    text-shadow: none;
+
+    /* Transiciones y animaciones */
+    transition: all 0.3s ease;
+    animation: gradientMove 3s ease infinite;
+}
+
+.form-group button::after {
+    background: #fff;
+    content: "";
+    height: 155px;
+    left: -75px;
+    opacity: 0.2;
+    position: absolute;
+    top: -50px;
+    transform: rotate(35deg);
+    transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+    width: 50px;
+    z-index: -10;
+}
+
+.form-group button:hover::after {
+    left: 120%;
+    transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.form-group button:hover {
+    /* Efecto de elevación */
+    transform: translateY(-2px);
+
+    /* Efecto fosforescente al hover */
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.2);
+    text-shadow: 1px 1px 2px #427388;
+}
+
+.form-group button:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Mensajes de error */
+.error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Pie del formulario */
+.form-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.form-footer a {
+    color: #2436d1;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+.form-footer p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #777;
+}
+
+/*posicion de mensajes de error en login*/
+.error-message {
+    top: 100%;
+    left: 0;
+    font-size: 12px;
+    color: red;
+    margin-top: 5px;
+    margin-left: 35px;
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(25, 39, 160, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-contenido {
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.95),
+            rgba(240, 240, 255, 0.9));
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 80%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    animation: aparecerModal 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border: 3px solid transparent;
+}
+
+.modal-contenido.error {
+    animation: aparecerModalError 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+        brilloInicial 0.5s ease-out 0.5s, bordeParpadeante 2s linear infinite 1s;
+}
+
+@keyframes aparecerModal {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-100px);
+    }
+
+    50% {
+        transform: scale(1.05) translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes aparecerModalError {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-100px);
+    }
+
+    40% {
+        transform: scale(1.1) translateY(20px);
+    }
+
+    60% {
+        transform: scale(0.9) translateY(-10px);
+    }
+
+    80% {
+        transform: scale(1.05) translateY(5px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes brilloInicial {
+    0% {
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.3);
+    }
+}
+
+@keyframes bordeParpadeante {
+
+    0%,
+    100% {
+        border-color: rgba(255, 0, 0, 0.7);
+    }
+
+    50% {
+        border-color: rgba(255, 0, 0, 0.3);
+    }
+}
+
+.cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.cerrar-modal:hover {
+    transform: scale(1.2) rotate(90deg);
+}
+
+#texto-modal {
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #f44336;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el modal de recuperación de contraseña */
+#recuperar-password-modal .modal-contenido,
+#verificar-codigo-modal .modal-contenido,
+#nueva-password-modal .modal-contenido {
+    max-width: 400px;
+    padding: 25px;
+}
+
+#recuperar-password-modal h3,
+#verificar-codigo-modal h3,
+#nueva-password-modal h3 {
+    margin-top: 0;
+    color: #333;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#recuperar-password-modal p,
+#verificar-codigo-modal p,
+#nueva-password-modal p {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #666;
+}
+
+#recuperarPasswordForm .form-group,
+#verificarCodigoForm .form-group,
+#nuevaPasswordForm .form-group {
+    margin-bottom: 15px;
+}
+
+.btn-recuperar {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-recuperar:hover {
+    background-color: #45a049;
+}
+
+/* Indicador de carga mejorado */
+.loading {
+    position: relative;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.loading:after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    right: 10px;
+    margin-top: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    z-index: 10000; /* Asegurar que esté por encima de todo */
+    display: block !important;
+}
+
+/* Estilos para el modal de carga */
+.loading-contenido {
+    text-align: center;
+    padding: 30px !important;
+    max-width: 300px !important;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #4CAF50;
+    margin: 0 auto 20px auto;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* Deshabilitar eventos de puntero en botones cargando */
+.loading * {
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Estilos para el campo de código de verificación */
+#codigoVerificacion {
+    letter-spacing: 4px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Estilos para los campos de contraseña */
+#newPassword,
+#confirmPassword {
+    transition: border-color 0.3s;
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+    color: #f44336;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+/* Estilos para campos con error */
+.input-error {
+    border-color: #f44336 !important;
+    box-shadow: 0 0 0 1px #f44336 !important;
+}
+
+/* Estilos para campos válidos */
+.input-success {
+    border-color: #4CAF50 !important;
+    box-shadow: 0 0 0 1px #4CAF50 !important;
+}
+

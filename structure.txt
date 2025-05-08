@@ -1,0 +1,40 @@
+PROYECTOUSO/
+├── config/
+├── node_modules/
+├── public/
+├── src/
+│   ├── client/
+│   │   ├── assets/
+│   │   │   └── 3607424.jpg
+│   │   ├── js/
+│   │   │   ├── bonus.js
+│   │   │   ├── login.js
+│   │   │   └── singup.js
+│   │   ├── pages/
+│   │   │   ├── 404.html            
+│   │   │   ├── bonus.html
+│   │   │   ├── condiciones.html
+│   │   │   ├── login.html
+│   │   │   └── singup.html
+│   │   └── styles/
+│   │       ├── styles404.css       
+│   │       ├── stylesBonus.css
+│   │       ├── stylesCondiciones.css
+│   │       ├── stylesLogin.css
+│   │       └── stylesSingUp.css
+│   ├── server/
+│   │   ├── controllers/
+│   │   │   ├── auth.controller.js
+│   │   │   └── passwordReset.controller.js 
+│   │   ├── db/
+│   │   │   └── connection.js
+│   │   ├── middleware/
+│   │   │   ├── authMiddleware.js
+│   │   │   └── securityMiddleware.js
+│   │   └── routes/
+│   │       ├── auth.js
+│   │       └── index.js
+│   └── app.js
+├── .env                           
+├── package-lock.json
+└── package.json                  

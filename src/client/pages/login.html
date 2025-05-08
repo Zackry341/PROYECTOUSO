@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Inicio de Sesión</title>
+    <link rel="stylesheet" href="/styles/stylesLogin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Agregar meta para prevenir cacheo de página con información sensible -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body>
+    <div class="glow-overlay"></div>
+    <div class="network-lines"></div>
+    <div class="container">
+        <form id="loginForm" class="login-form">
+            <h2 class="no-select"> Iniciar Sesión</h2>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <!-- Cambiar type a email y agregar atributos de seguridad -->
+                    <input class="no-select" type="email" id="username" name="username" placeholder="email@example.com"
+                        required autocomplete="email" maxlength="100"
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="error-message" id="username-error"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="input-with-icon">
+                    <!-- Agregar atributos de seguridad para contraseña -->
+                    <input class="no-select" type="password" id="password" name="password" placeholder="password"
+                        required autocomplete="current-password" maxlength="64">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <span class="error-message" id="password-error"></span>
+            </div>
+
+            <div class="g-recaptcha" data-sitekey="6LdstwYrAAAAACoEPKhWRQx0HlvLTjEb3e0vbxlw"></div>
+            <span class="error-message" id="captcha-error"></span>
+
+            <div class="form-group">
+                <button class="no-select" type="submit" id="submitBtn">Ingresar</button>
+            </div>
+
+            <div class="form-footer">
+                <a href="#" class="no-select forgot-password" id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+                <p class="no-select">¿No tienes cuenta? <a href="/pages/singUp.html"
+                        class="no-select register-link">Regístrate</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal para mensajes generales -->
+    <div id="mensaje-modal" class="modal" role="dialog" aria-labelledby="mensaje-titulo" aria-hidden="true">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" aria-label="Cerrar">&times;</span>
+            <p id="texto-modal"></p>
+        </div>
+    </div>
+
+    <!-- Modal para recuperación de contraseña (Paso 1: Solicitar código) -->
+    <div id="recuperar-password-modal" class="modal" role="dialog" aria-labelledby="recuperar-titulo"
+        aria-hidden="true">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" aria-label="Cerrar">&times;</span>
+            <h3 id="recuperar-titulo">Recuperar Contraseña</h3>
+            <p>Ingresa tu correo electrónico y te enviaremos un código de verificación.</p>
+            <form id="recuperarPasswordForm">
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <!-- Mejorar atributos de seguridad -->
+                        <input type="email" id="recuperarEmail" name="email" placeholder="email@example.com" required
+                            autocomplete="email" maxlength="100"
+                            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <span class="error-message" id="recuperarEmail-error"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-recuperar">Enviar código</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para ingresar código de verificación (Paso 2) -->
+    <div id="verificar-codigo-modal" class="modal" role="dialog" aria-labelledby="verificar-titulo" aria-hidden="true">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" aria-label="Cerrar">&times;</span>
+            <h3 id="verificar-titulo">Verificar Código</h3>
+            <p>Ingresa el código de 6 dígitos que enviamos a tu correo electrónico.</p>
+            <form id="verificarCodigoForm">
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <!-- Mejorar atributos de seguridad para el código -->
+                        <input type="text" id="codigoVerificacion" name="codigo" placeholder="123456" required
+                            pattern="[0-9]{6}" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <span class="error-message" id="codigo-error"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-recuperar">Verificar código</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para nueva contraseña (Paso 3) -->
+    <div id="nueva-password-modal" class="modal" role="dialog" aria-labelledby="nueva-password-titulo"
+        aria-hidden="true">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" aria-label="Cerrar">&times;</span>
+            <h3 id="nueva-password-titulo">Nueva Contraseña</h3>
+            <p>Ingresa tu nueva contraseña.</p>
+            <form id="nuevaPasswordForm">
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <!-- Mejorar atributos de seguridad para nueva contraseña -->
+                        <input type="password" id="newPassword" name="password" placeholder="Nueva contraseña" required
+                            autocomplete="new-password" minlength="8" maxlength="64">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <span class="error-message" id="newPassword-error"></span>
+                </div>
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <!-- Mejorar atributos de seguridad para confirmación -->
+                        <input type="password" id="confirmPassword" name="confirmPassword"
+                            placeholder="Confirmar contraseña" required autocomplete="new-password" minlength="8"
+                            maxlength="64">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <span class="error-message" id="confirmPassword-error"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-recuperar">Cambiar contraseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de carga -->
+    <div id="loading-modal" class="modal" role="dialog" aria-labelledby="loading-titulo" aria-hidden="true">
+        <div class="modal-contenido loading-contenido">
+            <div class="spinner" aria-hidden="true"></div>
+            <p id="loading-titulo">Procesando solicitud...</p>
+        </div>
+    </div>
+
+    <script src="/js/login.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
+
+</html>
