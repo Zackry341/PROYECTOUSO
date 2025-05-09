@@ -156,7 +156,7 @@ exports.resetPassword = async (req, res) => {
             const usuario = results[0];
             
             // Generar hash de la nueva contraseña
-            const bcrypt = require('bcrypt');
+            const bcrypt = require('bcryptjs');
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             

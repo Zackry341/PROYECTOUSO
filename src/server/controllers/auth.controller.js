@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const connection = require('../db/connection');
 
 // Controlador para el inicio de sesión
