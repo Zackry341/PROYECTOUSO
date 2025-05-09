@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnContinuar = document.getElementById('btn-continuar');
     const textoModal = document.getElementById('texto-modal');
     const modalContenido = document.querySelector('.modal-contenido');
+    const loadingModal = document.getElementById('loading-modal');
+
+
 
     // Validación de campos
     const nombre = document.getElementById('nombre');
@@ -80,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
             passwordError.textContent = '';
             password.classList.remove('input-success');
             password.classList.remove('input-error');
-            actualizarIndicadorFortaleza(); // Actualizar indicador incluso si está vacío
             return false;
         } else {
             // Verificar longitud mínima
@@ -98,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!tieneMayusculas) mensaje += '<br>• Al menos una letra mayúscula';
                 if (!tieneNumeros) mensaje += '<br>• Al menos un número';
                 if (!tieneEspeciales) mensaje += '<br>• Al menos un carácter especial';
-                
+
                 passwordError.innerHTML = mensaje; // Usamos innerHTML para interpretar los <br>
                 password.classList.remove('input-success');
                 password.classList.add('input-error');
@@ -112,25 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para validar el campo de confirmar contraseña
-    function validarConfirmPassword() {
-        if (confirmPassword.value === '') {
-            confirmPasswordError.textContent = '';
-            confirmPassword.classList.remove('input-success');
-            confirmPassword.classList.remove('input-error');
-            return false;
-        } else if (confirmPassword.value !== password.value) {
-            confirmPasswordError.textContent = 'Las contraseñas no coinciden';
-            confirmPassword.classList.remove('input-success');
-            confirmPassword.classList.add('input-error');
-            return false;
-        } else {
-            confirmPasswordError.textContent = '';
-            confirmPassword.classList.add('input-success');
-            confirmPassword.classList.remove('input-error');
-            return true;
-        }
-    }
 
     // Función para validar el campo de confirmar contraseña
     function validarConfirmPassword() {
@@ -230,18 +213,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 password: password.value,
                 telefono: sanitizeInput(telefono.value)
             };
-            
+
 
             // Enviar datos al servidor mediante fetch
             function fetchWithTimeout(url, options, timeout = 10000) {
                 return Promise.race([
                     fetch(url, options),
-                    new Promise((_, reject) => 
+                    new Promise((_, reject) =>
                         setTimeout(() => reject(new Error('Tiempo de espera agotado')), timeout)
                     )
                 ]);
             }
-            
+
             // Usar fetchWithTimeout en lugar de fetch
             fetchWithTimeout('/api/singup', {
                 method: 'POST',
@@ -254,48 +237,78 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Clonar la respuesta para poder examinarla
                     const responseClone = response.clone();
 
-                    return response.json().catch(err => {
-                        // Si falla el parsing JSON, examinar el texto de la respuesta
-                        return responseClone.text().then(text => {
-                            console.error('La respuesta no es JSON válido');
-                            throw new Error('Respuesta del servidor no es JSON válido');
-                        });
-                    });
+                    if (!response.ok) {
+                        // Intentar leer la respuesta como JSON
+                        return response.json()
+                            .then(errorData => {
+                                throw { status: response.status, data: errorData };
+                            })
+                            .catch(jsonError => {
+                                // Si falla el parsing JSON, intentar leer como texto
+                                return responseClone.text().then(textError => {
+                                    throw { status: response.status, message: textError || 'Error en la solicitud' };
+                                });
+                            });
+                    }
+
+                    return response.json();
                 })
-                .then(data => {
-                    if (data.success) {
-                        // redirigir a bonus.html
-                        window.location.href = '/pages/bonus.html';
-                    } else {
-                        textoModal.textContent = 'Error al registrar. Por favor, intenta nuevamente.';
+                .catch(error => {
+                    // Determinar el mensaje a mostrar
+                    let mensajeError = 'Error de conexión. Por favor, intenta nuevamente más tarde.';
+
+                    if (error.status === 400) {
+                        if (error.data && error.data.message) {
+                            // Si el error tiene la estructura esperada
+                            mensajeError = error.data.message;
+                        } else if (error.message) {
+                            // Si el mensaje es una cadena JSON, intentar parsearlo
+                            try {
+                                const errorData = JSON.parse(error.message);
+                                if (errorData.message) {
+                                    mensajeError = errorData.message;
+                                }
+                            } catch (e) {
+                                // Si no es JSON válido, usar el mensaje tal cual
+                                if (error.message !== 'Error en la solicitud') {
+                                    mensajeError = error.message;
+                                }
+                            }
+                        }
+                    }
+
+                    // Cambiar el título del modal
+                    const modalTitle = document.querySelector('.modal-contenido h3');
+                    if (modalTitle) {
+                        modalTitle.textContent = 'Error de Registro';
+                    }
+
+                    // Actualizar el texto del modal
+                    const textoModal = document.getElementById('texto-modal');
+                    if (textoModal) {
+                        textoModal.textContent = mensajeError;
                         textoModal.classList.add('error');
+                    }
+
+                    // Mostrar el modal
+                    const modalContenido = document.querySelector('.modal-contenido');
+                    const modal = document.getElementById('modal');
+                    if (modalContenido && modal) {
                         modalContenido.classList.add('error');
                         modal.style.display = 'flex';
                     }
-                    // Limpiar el formulario
-                    singupForm.reset();
-                    // remover input-success y input-error
-                    nombre.classList.remove('input-success');
-                    email.classList.remove('input-success');
-                    password.classList.remove('input-success');
-                    confirmPassword.classList.remove('input-success');
-                    telefono.classList.remove('input-success');
                 })
-                .catch(error => {
-                    console.error('Error:', error.name);
-                    if (error.message === 'Tiempo de espera agotado') {
-                        textoModal.textContent = 'La solicitud ha tardado demasiado. Por favor, verifica tu conexión e intenta nuevamente.';
-                    } else {
-                        textoModal.textContent = 'Error de conexión. Por favor, intenta nuevamente más tarde.';
-                    }
-                    textoModal.classList.add('error');
-                    modalContenido.classList.add('error');
-                    modal.style.display = 'flex';
-                })
+
+
                 .finally(() => {
+                    // Habilitar el botón de envío y quitar animación de carga
                     submitButton.disabled = false;
                     submitButton.classList.remove("loading");
+
+                    // Ocultar modal de carga
+                    loadingModal.style.display = 'none';
                 });
+
         }
     });
 

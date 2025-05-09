@@ -27,7 +27,7 @@
                 <div class="input-with-icon">
                     <i class="fas fa-user"></i>
                     <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required maxlength="100"
-                        autocomplete="name" pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,100}">
+                        autocomplete="name">
                 </div>
                 <span class="error-message" id="nombre-error"></span>
             </div>
@@ -36,7 +36,7 @@
                 <div class="input-with-icon">
                     <i class="fas fa-envelope"></i>
                     <input type="email" id="email" name="email" placeholder="Correo electrónico" required
-                        maxlength="100" autocomplete="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                        maxlength="100" autocomplete="email">
                 </div>
                 <span class="error-message" id="email-error"></span>
             </div>
@@ -66,8 +66,7 @@
             <div class="form-group">
                 <div class="input-with-icon">
                     <i class="fas fa-phone"></i>
-                    <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono" required
-                        pattern="[0-9]{10}" maxlength="10" autocomplete="tel">
+                    <input type="tel" id="telefono" name="telefono" placeholder="Número de teléfono">
                 </div>
                 <span class="error-message" id="telefono-error"></span>
             </div>
