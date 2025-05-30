@@ -234,17 +234,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(formData)
             }, 8000)
                 .then(response => {
-                    // Clonar la respuesta para poder examinarla
                     const responseClone = response.clone();
 
                     if (!response.ok) {
-                        // Intentar leer la respuesta como JSON
                         return response.json()
                             .then(errorData => {
                                 throw { status: response.status, data: errorData };
                             })
                             .catch(jsonError => {
-                                // Si falla el parsing JSON, intentar leer como texto
                                 return responseClone.text().then(textError => {
                                     throw { status: response.status, message: textError || 'Error en la solicitud' };
                                 });
@@ -252,6 +249,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     return response.json();
+                })
+                .then(data => {
+                    // AQUÍ FALTA EL MANEJO DEL ÉXITO
+                    // Cambiar el título del modal para éxito
+                    const modalTitle = document.querySelector('.modal-contenido h3');
+                    if (modalTitle) {
+                        modalTitle.textContent = 'Registro Exitoso';
+                    }
+
+                    // Mostrar mensaje de éxito
+                    textoModal.textContent = '¡Registro exitoso! Tu cuenta ha sido creada correctamente.';
+                    textoModal.classList.remove('error');
+                    textoModal.classList.add('success');
+
+                    modalContenido.classList.remove('error');
+                    modalContenido.classList.add('success');
+                    modal.style.display = 'flex';
+
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        window.location.href = '/pages/login.html';
+                    }, 3000);
                 })
                 .catch(error => {
                     // Determinar el mensaje a mostrar
