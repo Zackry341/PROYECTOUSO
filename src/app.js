@@ -32,18 +32,25 @@ securityMiddlewares.forEach(middleware => app.use(middleware));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, './client')));
-app.use('/js', express.static(path.join(__dirname, './client/js')));
-app.use('/pages', express.static(path.join(__dirname, './client/pages')));
-app.use('/styles', express.static(path.join(__dirname, './client/styles'), {
+// Servir archivos estáticos con rutas específicas
+app.use('/styles', express.static(path.join(__dirname, 'client/styles'), {
     setHeaders: function (res, path) {
         if (path.endsWith('.css')) {
             res.set('Content-Type', 'text/css');
         }
     }
 }));
-app.use('/assets', express.static(path.join(__dirname, './client/assets')));
+
+app.use('/js', express.static(path.join(__dirname, 'client/js'), {
+    setHeaders: function (res, path) {
+        if (path.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        }
+    }
+}));
+
+app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
+app.use('/pages', express.static(path.join(__dirname, 'client/pages')));
 
 // Configurar sesiones de usuario
 app.use(session({
@@ -51,9 +58,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Solo usar HTTPS en producción
-        //maxAge: 24 * 60 * 60 * 1000 // 24 horas
-        maxAge: 30 * 60 * 1000 // 5 minutos
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 60 * 1000 // 30 minutos
     }
 }));
 
@@ -61,14 +67,14 @@ app.use('/api/login', loginLimiter);
 
 // Usar las rutas
 app.use('/', indexRoutes);
-app.use('/api', authRoutes);  // Prefijo /api para las rutas de autenticación
+app.use('/api', authRoutes);
 
 // Middleware para manejar rutas no encontradas (404)
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, './client/pages/404.html'));
+    res.status(404).sendFile(path.join(__dirname, 'client/pages/404.html'));
 });
 
 // Iniciar el servidor
-app.listen(PORT, '0.0.0.0' ,() => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
 });
