@@ -14,6 +14,7 @@ const configureSecurityMiddleware = () => {
         contentSecurityPolicy: {
             directives: {
                 ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                crossOriginOpenerPolicy: false,
                 "default-src": [
                     "'self'",
                     "https://gc.kis.v2.scr.kaspersky-labs.com",
