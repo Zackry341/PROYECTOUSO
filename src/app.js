@@ -1,110 +1,74 @@
-const compression = require('compression');
-const helmet = require('helmet');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const configureSecurityMiddleware = require('./server/middlewares/securityMiddleware');
+const session = require('express-session');
+const rateLimit = require('express-rate-limit');
+require('dotenv').config();
 
-const configureSecurityMiddleware = () => {
-    const middlewares = [];
+// Importar rutas
+const indexRoutes = require('./server/routes/index');
+const authRoutes = require('./server/routes/auth');
 
-    // Middleware de compresión
-    middlewares.push(compression());
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-    // Middleware de Helmet con configuración personalizada
-    middlewares.push(helmet({
-        // Deshabilitar Cross-Origin-Embedder-Policy para resolver problemas con Kaspersky
-        crossOriginEmbedderPolicy: false,
-        // Deshabilitar Cross-Origin-Opener-Policy para HTTP
-        crossOriginOpenerPolicy: false,
-        // Deshabilitar Origin-Agent-Cluster para HTTP
-        originAgentCluster: false,
-        contentSecurityPolicy: {
-            directives: {
-                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-                "default-src": [
-                    "'self'",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "connect-src": [
-                    "'self'",
-                    "https://www.google.com/",
-                    "https://www.google.com/recaptcha/",
-                    "https://www.gstatic.com/recaptcha/",
-                    "https://recaptcha.google.com/recaptcha/",
-                    "https://*.google.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "script-src": [
-                    "'self'",
-                    "https://www.google.com/recaptcha/",
-                    "https://www.gstatic.com/recaptcha/",
-                    "https://cdnjs.cloudflare.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com",
-                    "'unsafe-inline'",
-                    "'unsafe-eval'"
-                ],
-                "script-src-elem": [
-                    "'self'",
-                    "https://www.google.com/recaptcha/",
-                    "https://www.gstatic.com/recaptcha/",
-                    "https://cdnjs.cloudflare.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com",
-                    "'unsafe-inline'"
-                ],
-                "style-src": [
-                    "'self'",
-                    "'unsafe-inline'",
-                    "https://cdnjs.cloudflare.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "style-src-elem": [
-                    "'self'",
-                    "'unsafe-inline'",
-                    "https://cdnjs.cloudflare.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "font-src": [
-                    "'self'",
-                    "https://cdnjs.cloudflare.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com",
-                    "data:"
-                ],
-                "img-src": [
-                    "'self'",
-                    "i.ibb.co",
-                    "data:",
-                    "https://cdn.dribbble.com",
-                    "https://*.dribbble.com",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "frame-src": [
-                    "'self'",
-                    "https://www.google.com/recaptcha/",
-                    "https://recaptcha.google.com/recaptcha/",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "worker-src": [
-                    "'self'",
-                    "blob:",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ],
-                "object-src": [
-                    "'self'",
-                    "https://gc.kis.v2.scr.kaspersky-labs.com",
-                    "https://*.kaspersky-labs.com"
-                ]
-            }
+// Configurar limitador de tasa para login
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 5, // 5 intentos
+    message: {
+        success: false,
+        message: 'Demasiados intentos de inicio de sesión. Por favor, intenta nuevamente después de 15 minutos.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Aplicar los middlewares de seguridad
+const securityMiddlewares = configureSecurityMiddleware();
+securityMiddlewares.forEach(middleware => app.use(middleware));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, './client')));
+app.use('/js', express.static(path.join(__dirname, './client/js')));
+app.use('/pages', express.static(path.join(__dirname, './client/pages')));
+app.use('/styles', express.static(path.join(__dirname, './client/styles'), {
+    setHeaders: function (res, path) {
+        if (path.endsWith('.css')) {
+            res.set('Content-Type', 'text/css');
         }
-    }));
+    }
+}));
+app.use('/assets', express.static(path.join(__dirname, './client/assets')));
 
-    return middlewares;
-};
+// Configurar sesiones de usuario
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Solo usar HTTPS en producción
+        //maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        maxAge: 30 * 60 * 1000 // 5 minutos
+    }
+}));
 
-module.exports = configureSecurityMiddleware;
+app.use('/api/login', loginLimiter);
+
+// Usar las rutas
+app.use('/', indexRoutes);
+app.use('/api', authRoutes);  // Prefijo /api para las rutas de autenticación
+
+// Middleware para manejar rutas no encontradas (404)
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, './client/pages/404.html'));
+});
+
+// Iniciar el servidor
+app.listen(PORT, '0.0.0.0' ,() => {
+    console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
+});
