@@ -52,6 +52,7 @@ app.use('/js', express.static(path.join(__dirname, 'client/js'), {
 app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
 app.use('/pages', express.static(path.join(__dirname, 'client/pages')));
 
+
 // Configurar sesiones de usuario
 app.use(session({
     secret: process.env.SESSION_SECRET,
