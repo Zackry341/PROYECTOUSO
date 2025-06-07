@@ -23,4 +23,8 @@ router.get('/bonus', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../../client/pages/bonus.html'));
 });
 
+router.get('/game', isAuthenticated,  (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/pages/game.html'));
+});
+
 module.exports = router;

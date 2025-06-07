@@ -3,27 +3,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const configureSecurityMiddleware = require('./server/middlewares/securityMiddleware');
 const session = require('express-session');
-const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 require('dotenv').config();
 
 // Importar rutas
 const indexRoutes = require('./server/routes/index');
 const authRoutes = require('./server/routes/auth');
+const difficultyRoutes = require('./server/routes/difficulty');
+const scoreboardRoutes = require('./server/routes/scoreboard');
+const creditsRoutes = require('./server/routes/credits');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Configurar limitador de tasa para login
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 5, // 5 intentos
-    message: {
-        success: false,
-        message: 'Demasiados intentos de inicio de sesión. Por favor, intenta nuevamente después de 15 minutos.'
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-});
+app.use(cors());
 
 // Aplicar los middlewares de seguridad
 const securityMiddlewares = configureSecurityMiddleware();
@@ -49,9 +41,34 @@ app.use('/js', express.static(path.join(__dirname, 'client/js'), {
     }
 }));
 
-app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
-app.use('/pages', express.static(path.join(__dirname, 'client/pages')));
+app.use('/utilities', express.static(path.join(__dirname, 'client/utilities'), {
+    setHeaders: function (res, path) {
+        if (path.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        }
+    }
+}));
 
+app.use('/components', express.static(path.join(__dirname, 'client/components'), {
+    setHeaders: function (res, path) {
+        if (path.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        }
+    }
+}));
+
+app.use('/pages', (req, res, next) => {
+    const protectedFiles = ['bonus.html', 'game.html'];
+    const isProtected = protectedFiles.some(file => req.path.includes(file));
+    
+    if (isProtected) {
+        return res.redirect('/'); // Redirigir a la página principal (login)
+    }
+    
+    next();
+}, express.static(path.join(__dirname, 'client/pages')));
+
+app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
 
 // Configurar sesiones de usuario
 app.use(session({
@@ -64,11 +81,12 @@ app.use(session({
     }
 }));
 
-app.use('/api/login', loginLimiter);
-
 // Usar las rutas
 app.use('/', indexRoutes);
 app.use('/api', authRoutes);
+app.use('/api/difficulty', difficultyRoutes);
+app.use('/api/scoreboard', scoreboardRoutes);
+app.use('/api/credits', creditsRoutes);
 
 // Middleware para manejar rutas no encontradas (404)
 app.use((req, res) => {

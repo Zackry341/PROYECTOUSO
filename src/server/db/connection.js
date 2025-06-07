@@ -16,6 +16,17 @@ if (process.env.JAWSDB_URL) {
     });
 }
 
+// Manejar errores de conexión
+connection.on('error', function(err) {
+    console.error('Error de conexión MySQL:', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('Reconectando a MySQL...');
+        // Aquí podrías implementar lógica de reconexión
+    } else {
+        throw err;
+    }
+});
+
 connection.connect((error) => {
     if (error) {
         console.error('Error al conectar a la base de datos MySQL:', error);

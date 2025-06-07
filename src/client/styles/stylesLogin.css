@@ -270,6 +270,7 @@ body::after {
 
 /* Contenedor para input con icono al lado */
 .input-with-icon {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -351,22 +352,32 @@ body::after {
 
 /* Contenedor para el recaptcha */
 .g-recaptcha {
-    transform: scale(1);
     width: 100%;
-    margin-bottom: 10px;
+    max-width: 304px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 0 auto 10px auto;
 }
 
 .g-recaptcha>div {
     width: 100% !important;
+    max-width: 304px !important;
     height: auto !important;
     text-align: center;
-    position: relative;
+    margin: 0 auto;
 }
 
 .g-recaptcha iframe {
+    width: 100% !important;
+    max-width: 304px !important;
+    height: 78px !important;
     margin: 0 auto !important;
     display: inline-block;
-    position: relative;
+    margin: 0 auto !important;
     z-index: 2;
 }
 
@@ -375,7 +386,7 @@ body::after {
     position: absolute;
     top: -2px;
     left: -2px;
-    right: -4px;
+    right: -3px;
     bottom: 4px;
     background: rgba(12, 25, 202, 0.2);
     border-radius: 2px;
@@ -394,6 +405,20 @@ body::after {
 
     100% {
         box-shadow: 0 0 5px rgba(12, 25, 202, 0.2);
+    }
+}
+
+/* Responsividad para móviles */
+@media (max-width: 320px) {
+    .g-recaptcha {
+        transform: scale(0.9);
+        transform-origin: center;
+    }
+}
+
+@media (max-width: 280px) {
+    .g-recaptcha {
+        transform: scale(0.8);
     }
 }
 
@@ -792,3 +817,48 @@ body::after {
     box-shadow: 0 0 0 1px #4CAF50 !important;
 }
 
+.password-toggler {
+    width: auto !important;
+    padding: 0 !important;
+    color: #333 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    background: none !important;
+    background-image: none !important;
+    position: absolute !important;
+    overflow: visible !important;
+
+    /* Transiciones y animaciones */
+    transition: none !important;
+    animation: none !important;
+}
+
+.password-toggler input {
+    transition: none !important;
+    animation: none !important;
+}
+
+.password-toggler input:focus {
+    transition: none !important;
+    animation: none !important;
+}
+
+.password-toggler::after {
+    display: none !important;
+}
+
+.password-toggler:hover {
+    transform: none !important;
+    border-color: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+.password-toggler:active {
+    transform: none !important;
+    box-shadow: none !important;
+}

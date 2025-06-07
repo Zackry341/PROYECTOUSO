@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const textoModal = document.getElementById('texto-modal');
     const modalContenido = document.querySelector('.modal-contenido');
     const loadingModal = document.getElementById('loading-modal');
+    const showPasswordBtns = document.querySelectorAll('.show-password-btn');
 
 
 
@@ -16,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmPassword = document.getElementById('confirm-password');
     const telefono = document.getElementById('telefono');
     const terminos = document.getElementById('terminos');
+    const submitButton = singupForm.querySelector('button[type="submit"]');
+
 
     // Mensajes de error
     const nombreError = document.getElementById('nombre-error');
@@ -32,67 +35,100 @@ document.addEventListener('DOMContentLoaded', function () {
     confirmPassword.addEventListener('input', validarConfirmPassword);
     telefono.addEventListener('input', validarTelefono);
 
+    // NUEVO: Estado de validación
+    const validationState = {
+        nombre: false,
+        email: false,
+        password: false,
+        confirmPassword: false,
+        telefono: false,
+        terminos: false
+    };
 
+    // NUEVO: Función para actualizar estado del botón
+    function updateSubmitButton() {
+        const allValid = Object.values(validationState).every(valid => valid);
 
-    // Función para validar el campo de nombre
+        if (allValid) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('disabled');
+            submitButton.classList.add('enabled');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.add('disabled');
+            submitButton.classList.remove('enabled');
+        }
+    }
+
+    // MEJORADO: Validación de nombre
     function validarNombre() {
-        if (nombre.value === '') {
+        const value = nombre.value.trim();
+
+        if (value === '') {
             nombreError.textContent = '';
-            nombre.classList.remove('input-success');
-            nombre.classList.remove('input-error');
-            return false;
-        } else if (nombre.value.length < 3) {
+            nombre.classList.remove('input-success', 'input-error');
+            validationState.nombre = false;
+        } else if (value.length < 3) {
             nombreError.textContent = 'El nombre debe tener al menos 3 caracteres';
             nombre.classList.remove('input-success');
             nombre.classList.add('input-error');
-            return false;
+            validationState.nombre = false;
+        } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+            nombreError.textContent = 'El nombre solo puede contener letras y espacios';
+            nombre.classList.remove('input-success');
+            nombre.classList.add('input-error');
+            validationState.nombre = false;
         } else {
             nombreError.textContent = '';
             nombre.classList.add('input-success');
             nombre.classList.remove('input-error');
-            return true;
+            validationState.nombre = true;
         }
+
+        updateSubmitButton();
+        return validationState.nombre;
     }
 
-    // Función para validar el campo de email
+    // MEJORADO: Validación de email
     function validarEmail() {
-        if (email.value === '') {
+        const value = email.value.trim();
+
+        if (value === '') {
             emailError.textContent = '';
-            email.classList.remove('input-success');
-            email.classList.remove('input-error');
-            return false;
+            email.classList.remove('input-success', 'input-error');
+            validationState.email = false;
         } else {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
+            if (!emailRegex.test(value)) {
                 emailError.textContent = 'Ingresa un correo electrónico válido';
                 email.classList.remove('input-success');
                 email.classList.add('input-error');
-                return false;
+                validationState.email = false;
             } else {
                 emailError.textContent = '';
                 email.classList.add('input-success');
                 email.classList.remove('input-error');
-                return true;
+                validationState.email = true;
             }
         }
+
+        updateSubmitButton();
+        return validationState.email;
     }
 
-    // Función para validar el campo de contraseña
+    // MEJORADO: Validación de contraseña
     function validarPassword() {
-        if (password.value === '') {
+        const value = password.value;
+
+        if (value === '') {
             passwordError.textContent = '';
-            password.classList.remove('input-success');
-            password.classList.remove('input-error');
-            return false;
+            password.classList.remove('input-success', 'input-error');
+            validationState.password = false;
         } else {
-            // Verificar longitud mínima
-            const longitudMinima = password.value.length >= 8;
-            // Verificar presencia de mayúsculas
-            const tieneMayusculas = /[A-Z]/.test(password.value);
-            // Verificar presencia de números
-            const tieneNumeros = /[0-9]/.test(password.value);
-            // Verificar presencia de caracteres especiales
-            const tieneEspeciales = /[!@#$%^&*(),.?":{}|<>]/.test(password.value);
+            const longitudMinima = value.length >= 8;
+            const tieneMayusculas = /[A-Z]/.test(value);
+            const tieneNumeros = /[0-9]/.test(value);
+            const tieneEspeciales = /[!@#$%^&*(),.?":{}|<>]/.test(value);
 
             if (!longitudMinima || !tieneMayusculas || !tieneNumeros || !tieneEspeciales) {
                 let mensaje = 'La contraseña debe tener:';
@@ -101,250 +137,259 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!tieneNumeros) mensaje += '<br>• Al menos un número';
                 if (!tieneEspeciales) mensaje += '<br>• Al menos un carácter especial';
 
-                passwordError.innerHTML = mensaje; // Usamos innerHTML para interpretar los <br>
+                passwordError.innerHTML = mensaje;
                 password.classList.remove('input-success');
                 password.classList.add('input-error');
-                return false;
+                validationState.password = false;
             } else {
                 passwordError.textContent = '';
                 password.classList.add('input-success');
                 password.classList.remove('input-error');
-                return true;
+                validationState.password = true;
             }
         }
+
+        // Re-validar confirmación de contraseña
+        if (confirmPassword.value !== '') {
+            validarConfirmPassword();
+        }
+
+        updateSubmitButton();
+        return validationState.password;
     }
 
-
-    // Función para validar el campo de confirmar contraseña
+    // MEJORADO: Validación de confirmación de contraseña
     function validarConfirmPassword() {
-        if (confirmPassword.value === '') {
+        const value = confirmPassword.value;
+
+        if (value === '') {
             confirmPasswordError.textContent = '';
-            confirmPassword.classList.remove('input-success');
-            confirmPassword.classList.remove('input-error');
-            return false;
-        } else if (confirmPassword.value !== password.value) {
+            confirmPassword.classList.remove('input-success', 'input-error');
+            validationState.confirmPassword = false;
+        } else if (value !== password.value) {
             confirmPasswordError.textContent = 'Las contraseñas no coinciden';
             confirmPassword.classList.remove('input-success');
             confirmPassword.classList.add('input-error');
-            return false;
+            validationState.confirmPassword = false;
         } else {
             confirmPasswordError.textContent = '';
             confirmPassword.classList.add('input-success');
             confirmPassword.classList.remove('input-error');
-            return true;
+            validationState.confirmPassword = true;
         }
+
+        updateSubmitButton();
+        return validationState.confirmPassword;
     }
 
-    // Función para validar el campo de teléfono
+    // MEJORADO: Validación de teléfono
     function validarTelefono() {
-        if (telefono.value === '') {
+        const value = telefono.value.trim();
+
+        if (value === '') {
             telefonoError.textContent = '';
-            telefono.classList.remove('input-success');
-            telefono.classList.remove('input-error');
-            return false;
+            telefono.classList.remove('input-success', 'input-error');
+            validationState.telefono = false;
         } else {
             const telefonoRegex = /^\d{8}$/;
-            if (!telefonoRegex.test(telefono.value)) {
+            if (!telefonoRegex.test(value)) {
                 telefonoError.textContent = 'Ingresa un número de teléfono válido (8 dígitos)';
                 telefono.classList.remove('input-success');
                 telefono.classList.add('input-error');
-                return false;
+                validationState.telefono = false;
             } else {
                 telefonoError.textContent = '';
                 telefono.classList.add('input-success');
                 telefono.classList.remove('input-error');
-                return true;
+                validationState.telefono = true;
             }
         }
+
+        updateSubmitButton();
+        return validationState.telefono;
     }
 
-    let formLoadTime = Date.now();
+    // NUEVO: Validación de términos
+    function validarTerminos() {
+        if (terminos.checked) {
+            terminosError.textContent = '';
+            validationState.terminos = true;
+        } else {
+            terminosError.textContent = 'Debes aceptar los términos y condiciones';
+            validationState.terminos = false;
+        }
 
-    // Envío del formulario
-    singupForm.addEventListener('submit', function (e) {
+        updateSubmitButton();
+        return validationState.terminos;
+    }
+
+    // Event listeners para validación en tiempo real
+    nombre.addEventListener('input', validarNombre);
+    email.addEventListener('input', validarEmail);
+    password.addEventListener('input', validarPassword);
+    confirmPassword.addEventListener('input', validarConfirmPassword);
+    telefono.addEventListener('input', validarTelefono);
+    terminos.addEventListener('change', validarTerminos);
+
+    // MEJORADO: Envío del formulario con manejo de errores robusto
+    singupForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        if (document.getElementById('website').value !== '') {
-            // Probablemente es un bot, rechazar el envío
+        // Verificación anti-bot
+        if (document.getElementById('website') && document.getElementById('website').value !== '') {
             return false;
         }
-        const timeElapsed = Date.now() - formLoadTime;
-        if (timeElapsed < 3000) { // 3 segundos mínimo
-            textoModal.textContent = 'Por favor, revisa cuidadosamente el formulario antes de enviarlo.';
-            textoModal.classList.add('error');
-            modalContenido.classList.add('error');
-            modal.style.display = 'flex';
+
+        // Verificar que todas las validaciones estén correctas
+        if (!Object.values(validationState).every(valid => valid)) {
+            mostrarModal('Por favor, completa todos los campos correctamente.', 'error');
             return;
         }
 
-        const submitButton = singupForm.querySelector('button[type="submit"]');
+        // Deshabilitar botón y mostrar loading
         submitButton.disabled = true;
         submitButton.classList.add("loading");
 
-        // Validar todos los campos
-        const isNombreValid = validarNombre();
-        const isEmailValid = validarEmail();
-        const isPasswordValid = validarPassword();
-        const isConfirmPasswordValid = validarConfirmPassword();
-        const isTelefonoValid = validarTelefono();
-
-        // Validar términos y condiciones
-        if (!terminos.checked) {
-            terminosError.textContent = 'Debes aceptar los términos y condiciones';
-            return;
-        } else {
-            terminosError.textContent = '';
-        }
-
-        // Si todos los campos son válidos, enviar al servidor
-        if (isNombreValid && isEmailValid && isPasswordValid &&
-            isConfirmPasswordValid && isTelefonoValid && terminos.checked) {
-
-            // Función para sanitizar entradas
-            function sanitizeInput(input) {
-                // Eliminar caracteres potencialmente peligrosos
-                return input.replace(/<|>|"|'|`|;|\\/g, '');
-            }
-
-            // Crear objeto con los datos del formulario
+        try {
+            // Sanitizar datos
             const formData = {
-                nombre: sanitizeInput(nombre.value),
-                email: sanitizeInput(email.value).toLowerCase(),
+                nombre: sanitizeInput(nombre.value.trim()),
+                email: sanitizeInput(email.value.trim().toLowerCase()),
                 password: password.value,
-                telefono: sanitizeInput(telefono.value)
+                telefono: sanitizeInput(telefono.value.trim())
             };
 
-
-            // Enviar datos al servidor mediante fetch
-            function fetchWithTimeout(url, options, timeout = 10000) {
-                return Promise.race([
-                    fetch(url, options),
-                    new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error('Tiempo de espera agotado')), timeout)
-                    )
-                ]);
-            }
-
-            // Usar fetchWithTimeout en lugar de fetch
-            fetchWithTimeout('/api/singup', {
+            // Enviar con timeout y retry
+            const response = await fetchWithRetry('/api/singup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
-            }, 8000)
-                .then(response => {
-                    const responseClone = response.clone();
+            }, 3); // 3 intentos
 
-                    if (!response.ok) {
-                        return response.json()
-                            .then(errorData => {
-                                throw { status: response.status, data: errorData };
-                            })
-                            .catch(jsonError => {
-                                return responseClone.text().then(textError => {
-                                    throw { status: response.status, message: textError || 'Error en la solicitud' };
-                                });
-                            });
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                mostrarModal('¡Registro exitoso! Redirigiendo...', 'success');
+
+                setTimeout(() => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        window.location.href = '/bonus';
                     }
+                }, 2000); 
+            } else {
+                throw new Error(data.message || 'Error en el registro');
+            }
 
-                    return response.json();
-                })
-                .then(data => {
-                    // AQUÍ FALTA EL MANEJO DEL ÉXITO
-                    // Cambiar el título del modal para éxito
-                    const modalTitle = document.querySelector('.modal-contenido h3');
-                    if (modalTitle) {
-                        modalTitle.textContent = 'Registro Exitoso';
+        } catch (error) {
+            console.error('Error en registro:', error);
+
+            let mensajeError = 'Error de conexión. Por favor, intenta nuevamente.';
+
+            if (error.message && error.message !== 'Failed to fetch') {
+                mensajeError = error.message;
+            }
+
+            mostrarModal(mensajeError, 'error');
+
+            // NUEVO: Opción de recargar página en caso de error crítico
+            if (error.message && error.message.includes('Error interno del servidor')) {
+                setTimeout(() => {
+                    if (confirm('Hubo un error en el servidor. ¿Deseas recargar la página?')) {
+                        window.location.reload();
                     }
+                }, 3000);
+            }
 
-                    // Mostrar mensaje de éxito
-                    textoModal.textContent = '¡Registro exitoso! Tu cuenta ha sido creada correctamente.';
-                    textoModal.classList.remove('error');
-                    textoModal.classList.add('success');
-
-                    modalContenido.classList.remove('error');
-                    modalContenido.classList.add('success');
-                    modal.style.display = 'flex';
-
-                    setTimeout(() => {
-                        modal.style.display = 'none';
-                        window.location.href = '/pages/login.html';
-                    }, 3000);
-                })
-                .catch(error => {
-                    // Determinar el mensaje a mostrar
-                    let mensajeError = 'Error de conexión. Por favor, intenta nuevamente más tarde.';
-
-                    if (error.status === 400) {
-                        if (error.data && error.data.message) {
-                            // Si el error tiene la estructura esperada
-                            mensajeError = error.data.message;
-                        } else if (error.message) {
-                            // Si el mensaje es una cadena JSON, intentar parsearlo
-                            try {
-                                const errorData = JSON.parse(error.message);
-                                if (errorData.message) {
-                                    mensajeError = errorData.message;
-                                }
-                            } catch (e) {
-                                // Si no es JSON válido, usar el mensaje tal cual
-                                if (error.message !== 'Error en la solicitud') {
-                                    mensajeError = error.message;
-                                }
-                            }
-                        }
-                    }
-
-                    // Cambiar el título del modal
-                    const modalTitle = document.querySelector('.modal-contenido h3');
-                    if (modalTitle) {
-                        modalTitle.textContent = 'Error de Registro';
-                    }
-
-                    // Actualizar el texto del modal
-                    const textoModal = document.getElementById('texto-modal');
-                    if (textoModal) {
-                        textoModal.textContent = mensajeError;
-                        textoModal.classList.add('error');
-                    }
-
-                    // Mostrar el modal
-                    const modalContenido = document.querySelector('.modal-contenido');
-                    const modal = document.getElementById('modal');
-                    if (modalContenido && modal) {
-                        modalContenido.classList.add('error');
-                        modal.style.display = 'flex';
-                    }
-                })
-
-
-                .finally(() => {
-                    // Habilitar el botón de envío y quitar animación de carga
-                    submitButton.disabled = false;
-                    submitButton.classList.remove("loading");
-
-                    // Ocultar modal de carga
-                    loadingModal.style.display = 'none';
-                });
-
+        } finally {
+            submitButton.disabled = false;
+            submitButton.classList.remove("loading");
         }
     });
 
-    // Configurar el cierre del modal
+    // NUEVO: Función para mostrar modal con tipos
+    function mostrarModal(mensaje, tipo) {
+        const modalTitle = document.querySelector('.modal-contenido h3');
+
+        if (tipo === 'success') {
+            if (modalTitle) modalTitle.textContent = 'Registro Exitoso';
+            textoModal.textContent = mensaje;
+            textoModal.classList.remove('error');
+            textoModal.classList.add('success');
+            modalContenido.classList.remove('error');
+            modalContenido.classList.add('success');
+        } else {
+            if (modalTitle) modalTitle.textContent = 'Error de Registro';
+            textoModal.textContent = mensaje;
+            textoModal.classList.add('error');
+            textoModal.classList.remove('success');
+            modalContenido.classList.add('error');
+            modalContenido.classList.remove('success');
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    // NUEVO: Fetch con reintentos
+    async function fetchWithRetry(url, options, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetchWithTimeout(url, options, 10000);
+                return response;
+            } catch (error) {
+                if (i === retries - 1) throw error;
+                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Espera incremental
+            }
+        }
+    }
+
+    // Función existente mejorada
+    function fetchWithTimeout(url, options, timeout = 10000) {
+        return Promise.race([
+            fetch(url, options),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Tiempo de espera agotado')), timeout)
+            )
+        ]);
+    }
+
+    function sanitizeInput(input) {
+        return input.replace(/<|>|"|'|`|;|\\/g, '');
+    }
+
+    // Inicializar botón como deshabilitado
+    updateSubmitButton();
+
+    // Event listeners existentes...
     cerrarModal.addEventListener('click', function () {
         modal.style.display = 'none';
     });
 
-    //boton de continuar
     btnContinuar.addEventListener('click', function () {
         modal.style.display = 'none';
     });
 
-    // Cerrar modal al hacer clic fuera de él
     window.addEventListener('click', function (e) {
         if (e.target === modal) {
             modal.style.display = 'none';
         }
+    });
+
+    showPasswordBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const passwordInput = btn.parentElement.querySelector('input[type="password"], input[type="text"]');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                passwordInput.type = 'password';
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
     });
 });

@@ -16,6 +16,8 @@ body {
     position: relative;
     overflow: hidden;
     user-select: none;
+            overflow-y: auto !important; /* AGREGAR */
+        -webkit-overflow-scrolling: touch; /* AGREGAR */
 }
 
 h2 {
@@ -79,7 +81,8 @@ h3 {
     z-index: 1;
     isolation: isolate;
     animation: giro 1s 1;
-    transform: translateX(0); /* Transformación inicial explícita */
+    transform: translateX(0);
+    /* Transformación inicial explícita */
     transition: transform 1s ease, box-shadow 0.8s ease, left 0.5s ease;
     will-change: transform, box-shadow;
 }
@@ -126,7 +129,7 @@ h3 {
 }
 
 /* Tarjetas a la derecha de la que tiene hover */
-.hover-activo .tarjeta:hover ~ .tarjeta {
+.hover-activo .tarjeta:hover~.tarjeta {
     left: 50px;
     transform: translateX(10px);
     transition: left 0.5s ease, transform 0.5s ease;
@@ -144,7 +147,7 @@ h3 {
     transform: scale(1.03);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
         0 0 10px 10px var(--tarjeta-color, rgba(255, 255, 255, 0.589)) !important;
-    
+
 }
 
 /* Estilo tarjeta Easy */
@@ -307,10 +310,317 @@ h3 {
 }
 
 
-/* Responsive */
+/* ===== MEDIA QUERIES RESPONSIVE PARA BONUS ===== */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+    .tarjetas-container {
+        gap: 3vw;
+        max-width: 900px;
+        padding: 0 20px;
+    }
+
+    .tarjeta {
+        width: 280px;
+        max-width: 280px;
+        height: 450px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+
+    h3 {
+        font-size: 36px;
+    }
+
+    p {
+        font-size: 18px;
+    }
+
+    .esquina-superior,
+    .esquina-inferior,
+    .esquina-superior2,
+    .esquina-inferior2,
+    .esquina-superior3,
+    .esquina-inferior3 {
+        font-size: 60px;
+    }
+}
+
+/* Tablets pequeñas */
 @media (max-width: 768px) {
+    .tarjetas-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
     .tarjeta {
         width: 100%;
-        max-width: 400px;
+        max-width: 350px;
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    /* Desactivar efectos hover en móviles */
+    .hover-activo .tarjeta:hover {
+        transform: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .hover-activo .tarjeta:hover~.tarjeta {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    .hover-activo .tarjeta:has(+ .tarjeta:hover),
+    .hover-activo .tarjeta:has(+ .tarjeta + .tarjeta:hover) {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .esquina-superior,
+    .esquina-inferior,
+    .esquina-superior2,
+    .esquina-inferior2,
+    .esquina-superior3,
+    .esquina-inferior3 {
+        font-size: 50px;
+    }
+
+    .contenido {
+        padding: 15px;
+    }
+
+    /* Hacer las tarjetas más táctiles */
+    .tarjeta {
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tarjeta:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        min-height: 100vh;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    .tarjetas-container {
+        gap: 20px;
+        padding: 10px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .tarjeta {
+        width: 100%;
+        max-width: 300px;
+        height: 350px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 14px;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .esquina-superior,
+    .esquina-inferior,
+    .esquina-superior2,
+    .esquina-inferior2,
+    .esquina-superior3,
+    .esquina-inferior3 {
+        font-size: 40px;
+    }
+
+    .esquina-superior,
+    .esquina-superior2,
+    .esquina-superior3 {
+        left: 15px;
+    }
+
+    .esquina-inferior,
+    .esquina-inferior2,
+    .esquina-inferior3 {
+        right: 15px;
+    }
+
+    .contenido {
+        padding: 12px;
+    }
+
+    #imagen {
+        max-width: 70%;
+        opacity: 0.6;
+    }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 360px) {
+    .tarjetas-container {
+        gap: 15px;
+        padding: 5px;
+    }
+
+    .tarjeta {
+        width: 100%;
+        max-width: 280px;
+        height: 320px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 13px;
+    }
+
+    .esquina-superior,
+    .esquina-inferior,
+    .esquina-superior2,
+    .esquina-inferior2,
+    .esquina-superior3,
+    .esquina-inferior3 {
+        font-size: 35px;
+    }
+
+    .contenido {
+        padding: 10px;
+    }
+}
+
+/* Landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        align-items: center;
+        padding-top: 10px;
+    }
+
+    .tarjetas-container {
+        flex-direction: row;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 10px 20px;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .tarjeta {
+        flex-shrink: 0;
+        width: 250px;
+        max-width: 250px;
+        height: 300px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 13px;
+    }
+
+    .esquina-superior,
+    .esquina-inferior,
+    .esquina-superior2,
+    .esquina-inferior2,
+    .esquina-superior3,
+    .esquina-inferior3 {
+        font-size: 35px;
+    }
+}
+
+/* Mejoras para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+    .tarjeta {
+        min-height: 48px;
+        /* Área mínima táctil */
+    }
+
+    /* Agregar feedback táctil */
+    .tarjeta:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    /* Desactivar animaciones complejas en dispositivos táctiles */
+    .tarjeta {
+        animation: none;
+    }
+
+    @keyframes giro {
+        from {
+            transform: rotateY(0deg);
+        }
+
+        to {
+            transform: rotateY(0deg);
+        }
+    }
+}
+
+/* Scrollbar horizontal para landscape móvil */
+@media (max-width: 768px) and (orientation: landscape) {
+    .tarjetas-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .tarjetas-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .tarjetas-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    .tarjetas-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
     }
 }
