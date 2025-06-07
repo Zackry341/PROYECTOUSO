@@ -1,0 +1,184 @@
+const db = require('../db/connection');
+
+const scoreboardController = {
+    // Obtener puntajes (top 10)
+    getScoreboard: (req, res) => {
+        const query = 'SELECT nombre, score, difficulty FROM usuarios WHERE score IS NOT NULL ORDER BY score DESC LIMIT 10';
+
+        db.query(query, (error, results) => {
+            if (error) {
+                console.error('Error al obtener scoreboard:', error);
+                return res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+            res.json({
+                success: true,
+                data: results
+            });
+        });
+    },
+
+    // Guardar/actualizar puntaje del usuario actual (solo si es mejor)
+    saveScore: (req, res) => {
+        try {
+            const { score } = req.body;
+            const userId = req.session.userId;
+
+            // Debug logs
+            console.log('saveScore - Datos recibidos:', { score, userId });
+
+            if (!userId) {
+                console.log('saveScore - Usuario no autenticado');
+                return res.status(401).json({
+                    success: false,
+                    error: 'Usuario no autenticado'
+                });
+            }
+
+            if (!score || score < 0) {
+                console.log('saveScore - Score inválido:', score);
+                return res.status(400).json({
+                    success: false,
+                    error: 'Score inválido'
+                });
+            }
+
+            // Primero obtener el puntaje actual del usuario
+            const getScoreQuery = 'SELECT score FROM usuarios WHERE id = ?';
+
+            db.query(getScoreQuery, [userId], (error, results) => {
+                if (error) {
+                    console.error('Error al obtener score actual:', error);
+                    return res.status(500).json({
+                        success: false,
+                        error: 'Error al obtener puntaje actual: ' + error.message
+                    });
+                }
+
+                if (results.length === 0) {
+                    console.log('saveScore - Usuario no encontrado con ID:', userId);
+                    return res.status(404).json({
+                        success: false,
+                        error: 'Usuario no encontrado'
+                    });
+                }
+
+                const currentScore = results[0]?.score || 0;
+
+
+                // Solo actualizar si el nuevo puntaje es mayor
+                if (score > currentScore) {
+                    // ✅ DEFINIR updateQuery AQUÍ DENTRO DEL IF
+                    const updateQuery = 'UPDATE usuarios SET score = ? WHERE id = ?';
+
+
+                    db.query(updateQuery, [score, userId], (updateError, result) => {
+                        if (updateError) {
+                            console.error('Error al actualizar score:', updateError);
+                            return res.status(500).json({
+                                success: false,
+                                error: 'Error al actualizar puntaje: ' + updateError.message
+                            });
+                        }
+
+                        res.json({
+                            success: true,
+                            message: '¡Nuevo récord establecido!',
+                            isNewRecord: true,
+                            newScore: score,
+                            previousScore: currentScore
+                        });
+                    });
+                } else {
+
+                    res.json({
+                        success: true,
+                        message: 'Puntaje registrado (no supera tu récord actual)',
+                        isNewRecord: false,
+                        currentScore: score,
+                        bestScore: currentScore
+                    });
+                }
+            });
+
+        } catch (error) {
+            console.error('Error general en saveScore:', error);
+            return res.status(500).json({
+                success: false,
+                error: 'Error interno del servidor: ' + error.message
+            });
+        }
+    },
+
+    // Limpiar todos los puntajes
+    clearScoreboard: (req, res) => {
+        try {
+
+            db.query(query, (error) => {
+                if (error) {
+                    console.error('Error al limpiar scoreboard:', error);
+                    return res.status(500).json({
+                        success: false,
+                        error: error.message
+                    });
+                }
+                res.json({
+                    success: true,
+                    message: 'Scoreboard limpiado correctamente'
+                });
+            });
+        } catch (error) {
+            console.error('Error general en clearScoreboard:', error);
+            return res.status(500).json({
+                success: false,
+                error: 'Error interno del servidor: ' + error.message
+            });
+        }
+    },
+
+    // Obtener score personal del usuario logueado
+    getPersonalScore: (req, res) => {
+        try {
+            const userId = req.session.userId;
+
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Usuario no autenticado'
+                });
+            }
+
+            db.query(query, [userId], (error, results) => {
+                if (error) {
+                    console.error('Error al obtener score personal:', error);
+                    return res.status(500).json({
+                        success: false,
+                        error: error.message
+                    });
+                }
+
+                if (results.length === 0) {
+                    return res.status(404).json({
+                        success: false,
+                        error: 'Usuario no encontrado'
+                    });
+                }
+
+                res.json({
+                    success: true,
+                    user: results[0]
+                });
+            });
+        } catch (error) {
+            console.error('Error general en getPersonalScore:', error);
+            return res.status(500).json({
+                success: false,
+                error: 'Error interno del servidor: ' + error.message
+            });
+        }
+    }
+};
+
+module.exports = scoreboardController;

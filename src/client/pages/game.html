@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+	<title>Uso Game</title>
+	<link rel="stylesheet" href="/styles/stylesGame.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+	<canvas class="game"></canvas>
+	<div id="controls">
+		<div>
+			<button id="forward">🡡</button>
+			<button id="left">🡠</button>
+			<button id="backward">🡣</button>
+			<button id="right">🡢</button>
+		</div>
+	</div>
+
+	<div id="score">0</div>
+
+	<!-- Información del usuario - esquina inferior izquierda -->
+	<div id="user-info">
+		<div class="user-stats">
+			<div class="user-name">
+				<span class="label">Usuario:</span>
+				<span id="username">Cargando...</span>
+			</div>
+			<div class="user-score">
+				<span class="label">Mejor puntuación:</span>
+				<span id="best-score">0</span>
+			</div>
+			<div class="user-difficulty">
+				<span class="label">Dificultad:</span>
+				<span id="user-difficulty-display">Fácil</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Créditos - esquina inferior derecha -->
+	<div id="credits-info">
+		<div class="credits-display">
+			<span class="label">Créditos:</span>
+			<span id="credits-count">0</span>
+		</div>
+	</div>
+
+	<div id="result-container">
+		<div id="result">
+			<h1>Game Over</h1>
+			<p>Your score: <span id="final-score"></span></p>
+			<button id="view-scoreboard">View Scoreboard</button>
+			<div id="scoreboard" style="display: none"></div>
+			<button id="back-to-menu">Volver al menú</button>
+		</div>
+	</div>
+
+	<!-- Pausa con icono -->
+	<div id="pause-modal">
+		<div class="pause-content">
+			<h2>Juego en pausa</h2>
+			<button id="resume-game">
+				<i class="fas fa-play"></i> Reanudar
+			</button>
+			<button id="back-to-main-menu">
+				<i class="fas fa-home"></i> Volver al menú principal
+			</button>
+			<button id="logout-button" class="logout-btn">
+				<i class="fas fa-sign-out-alt"></i> Cerrar sesión
+			</button>
+		</div>
+	</div>
+
+
+
+	<!-- Modal menú -->
+	<div id="main-menu-modal">
+		<div class="main-menu-content">
+			<!-- Sección de apuestas -->
+			<div class="betting-section">
+				<h3>Configurar Apuesta</h3>
+				<div class="bet-display">
+					<span class="bet-label">Apuesta actual:</span>
+					<span class="bet-amount" id="current-bet">30</span>
+					<span class="bet-currency">créditos</span>
+				</div>
+				<div class="bet-controls">
+					<button class="bet-btn decrease" id="bet-minus-100">-100</button>
+					<button class="bet-btn decrease" id="bet-minus-10">-10</button>
+					<button class="bet-btn decrease" id="bet-minus-1">-1</button>
+					<button class="bet-btn increase" id="bet-plus-1">+1</button>
+					<button class="bet-btn increase" id="bet-plus-10">+10</button>
+					<button class="bet-btn increase" id="bet-plus-100">+100</button>
+				</div>
+				<div class="bet-info">
+					<span class="min-bet">Apuesta mínima: 30 créditos</span>
+				</div>
+			</div>
+
+			<!-- Título del juego -->
+			<div class="game-title">
+				<h1>Cuby Cross</h1>
+				<div class="title-decoration"></div>
+			</div>
+
+			<!-- Menú principal -->
+			<div class="main-menu-buttons">
+				<button id="start-game" class="menu-btn primary">
+					<i class="fa fa-play"></i>
+					<span>Iniciar Partida</span>
+				</button>
+				<button id="show-scoreboard" class="menu-btn secondary">
+					<i class="fa fa-trophy"></i>
+					<span>Ver Tabla de Puntuaciones</span>
+				</button>
+				<button id="select-difficulty" class="menu-btn difficulty">
+					<i class=""></i>
+					<span>Seleccionar dificultad</span>
+				</button>
+			</div>
+		</div>
+
+		<div class="credits-shop">
+			<button id="shop-button"><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
+		</div>
+	</div>
+
+	<!-- Modal tienda -->
+	<div id="shop-modal">
+		<div class="shop-content">
+			<button id="close-shop" class="close-btn">&times;</button>
+			<h2>Tienda de Créditos</h2>
+			<div id="shop-items-container">
+				<div class="credit-item">
+					<div class="credit-icon">💰</div>
+					<div class="credit-amount">100</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$0.99</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+
+				<div class="credit-item popular">
+					<div class="popular-badge">¡Popular!</div>
+					<div class="credit-icon">💎</div>
+					<div class="credit-amount">500</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$4.99</div>
+					<div class="bonus">+50 Bonus</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+
+				<div class="credit-item">
+					<div class="credit-icon">🏆</div>
+					<div class="credit-amount">1,000</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$9.99</div>
+					<div class="bonus">+100 Bonus</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+
+				<div class="credit-item best-value">
+					<div class="best-badge">¡Mejor Valor!</div>
+					<div class="credit-icon">⭐</div>
+					<div class="credit-amount">2,500</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$19.99</div>
+					<div class="bonus">+500 Bonus</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+
+				<div class="credit-item">
+					<div class="credit-icon">👑</div>
+					<div class="credit-amount">5,000</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$39.99</div>
+					<div class="bonus">+1,000 Bonus</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+
+				<div class="credit-item premium">
+					<div class="premium-badge">Premium</div>
+					<div class="credit-icon">💸</div>
+					<div class="credit-amount">10,000</div>
+					<div class="credit-label">Créditos</div>
+					<div class="credit-price">$79.99</div>
+					<div class="bonus">+2,500 Bonus</div>
+					<button class="buy-btn">Comprar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal de compra exitosa -->
+	<div id="success-modal">
+		<div class="success-content">
+			<button id="close-success" class="close-btn">&times;</button>
+
+			<!-- Efectos de confeti -->
+			<div class="confetti-container">
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+				<div class="confetti"></div>
+			</div>
+
+			<!-- Icono de éxito -->
+			<div class="success-icon">
+				<div class="checkmark">
+					<div class="checkmark-circle"></div>
+					<div class="checkmark-stem"></div>
+					<div class="checkmark-kick"></div>
+				</div>
+			</div>
+
+			<!-- Contenido principal -->
+			<h2 class="success-title">¡Compra Exitosa!</h2>
+			<p class="success-message">¡Felicidades! Tu compra se ha procesado correctamente.</p>
+
+			<!-- Detalles de la compra -->
+			<div class="purchase-details">
+				<div class="detail-item">
+					<span class="detail-label">Créditos obtenidos:</span>
+					<span class="detail-value" id="credits-obtained">1,000 + 100 Bonus</span>
+				</div>
+				<div class="detail-item">
+					<span class="detail-label">Total pagado:</span>
+					<span class="detail-value" id="amount-paid">$9.99</span>
+				</div>
+				<div class="detail-item">
+					<span class="detail-label">Nuevo saldo:</span>
+					<span class="detail-value" id="new-balance">2,500 Créditos</span>
+				</div>
+			</div>
+
+			<!-- Botones de acción -->
+			<div class="success-actions">
+				<button id="continue-shopping" class="action-btn secondary">Seguir Comprando</button>
+				<button id="start-playing" class="action-btn primary">¡Empezar a Jugar!</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal tabla de puntuaciones -->
+	<div id="scoreboard-modal">
+		<div class="scoreboard-content">
+			<h2>Tabla de puntuaciones</h2>
+			<div id="scoreboard-table-container">
+				<div id="scoreboard-table"></div>
+			</div>
+			<div style="display: flex; gap: 10px; margin-top: 20px">
+				<button id="close-scoreboard">Cerrar</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal confirmación limpiar tabla de puntuaciones-->
+	<div id="confirm-clear-modal">
+		<div class="confirm-clear-content">
+			<p>¿Estás seguro de que deseas limpiar la tabla de puntuaciones?</p>
+			<div>
+				<button id="confirm-clear-yes">Sí</button>
+				<button id="confirm-clear-no">No</button>
+			</div>
+		</div>
+	</div>
+
+	<script type="module">
+		import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
+		window.THREE = THREE;
+	</script>
+	<script type="module" src="/js/userInfo.js"></script>
+	<script type="module" src="/js/main.js"></script>
+	<script type="module" src="/js/collectUserInput.js"></script>
+</body>
+
+</html>
